@@ -1,5 +1,5 @@
 // src/components/Navbar.jsx
-import React, { useState } from 'react';
+import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext.js';
 
@@ -17,7 +17,6 @@ const AUTH_LINKS = [
 ];
 
 function Navbar() {
-  const [menuOpen, setMenuOpen] = useState(false);
   const location  = useLocation();
   const navigate  = useNavigate();
   const { user, logOut } = useAuth();

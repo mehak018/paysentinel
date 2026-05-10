@@ -286,12 +286,17 @@ function Home() {
             AI Guardian
           </span>
         </div>
-        <div className="flex gap-6 text-sm text-gray-500">
-          {['Privacy Policy','Terms','API Docs','GitHub'].map(l => (
-            <a key={l} href="#" 
-               className="hover:text-gray-300 transition-colors">{l}</a>
-          ))}
-        </div>
+     <div className="flex gap-6 text-sm text-gray-500">
+  {['Privacy Policy','Terms','API Docs','GitHub'].map(l => (
+    <a
+      key={l}
+      href="/about"
+      className="hover:text-gray-300 transition-colors"
+    >
+      {l}
+    </a>
+  ))}
+</div>
         <p className="text-xs text-gray-600 font-mono">
           React + Node.js + Firebase · v1.0.0
         </p>
