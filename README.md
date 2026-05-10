@@ -23,7 +23,7 @@ fraudulent UTR transactions, and malicious QR codes.
 ## 🚀 Run Locally
 
 1. Clone the repo
-   git clone https://github.com/YOUR_USERNAME/paysentinel.git
+   git clone https://github.com/mehak018/paysentinel.git
 
 2. Install dependencies
    cd paysentinel
