@@ -4,7 +4,7 @@ An AI-powered fintech security platform that detects fake online payments,
 fraudulent UTR transactions, and malicious QR codes.
 
 ## 🌐 Live Demo
-[Coming soon — deploying to Vercel]
+ -  deployed to vercel
 
 ## ✨ Features
 - 🖼️ Fake payment screenshot detection
