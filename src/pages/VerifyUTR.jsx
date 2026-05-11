@@ -1,7 +1,9 @@
 // src/pages/VerifyUTR.jsx
+import { saveScanResult } from '../services/firebase.js';
+import { useAuth }        from '../contexts/AuthContext.js';
 import React, { useState } from 'react';
-import { verifyUTR } from '../services/api';
-import VerdictCard from '../components/VerdictCard';
+import { verifyUTR } from '../services/api.js';
+import VerdictCard from '../components/VerdictCard.jsx';
 
 // ── History row component ────────────────────────────────────
 function HistoryRow({ utr, verdict, amount, time }) {
@@ -45,6 +47,7 @@ function HistoryRow({ utr, verdict, amount, time }) {
 
 // ── MAIN PAGE ────────────────────────────────────────────────
 function VerifyUTR() {
+  const { user } = useAuth();
   // Form state
   const [utrNumber,      setUtrNumber]      = useState('');
   const [paymentMethod,  setPaymentMethod]  = useState('UPI');
@@ -82,6 +85,18 @@ function VerifyUTR() {
         expectedAmount
       );
       setResult(data);
+      // Save to Firestore if user is logged in
+if (user) {
+  await saveScanResult(user.uid, {
+    type:      'UTR',
+    utrNumber: utrNumber.trim(),
+    verdict:   data.verdict,
+    confidence:data.confidence,
+    riskScore: data.riskScore,
+    method:    paymentMethod,
+    amount:    expectedAmount || null,
+  });
+}
 
       // Add to local history
       setHistory(prev => [{

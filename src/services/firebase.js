@@ -1,9 +1,7 @@
 // src/services/firebase.js
-// This file connects your React app to your Firebase project
-
-import { initializeApp } from 'firebase/app';
-import { 
-  getAuth, 
+import { initializeApp }      from 'firebase/app';
+import {
+  getAuth,
   GoogleAuthProvider,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -11,10 +9,18 @@ import {
   signOut,
   onAuthStateChanged
 } from 'firebase/auth';
+import {
+  getFirestore,       // ← NEW: Firestore database
+  collection,
+  addDoc,
+  getDocs,
+  query,
+  where,
+  orderBy,
+  limit,
+  serverTimestamp,
+} from 'firebase/firestore';
 
-// ── YOUR Firebase config ──────────────────────────────────
-// Replace these values with YOUR project's values from
-// Firebase Console → Project Settings → Your apps → SDK setup
 const firebaseConfig = {
   apiKey: "AIzaSyCcrl4ioCyodKOnQcCn9GsMgdVRTgPkfyA",
   authDomain: "paysentinel-1adac.firebaseapp.com",
@@ -24,33 +30,55 @@ const firebaseConfig = {
   appId: "1:14082305511:web:7d69e0726c45e1d9dc2142"
 };
 
-// Initialize Firebase — this starts the connection
-const app  = initializeApp(firebaseConfig);
+const app = initializeApp(firebaseConfig);
 
-// Get the Auth service from Firebase
-export const auth = getAuth(app);
-
-// Google provider — used for "Sign in with Google" button
+export const auth          = getAuth(app);
+export const db            = getFirestore(app);  // ← NEW
 export const googleProvider = new GoogleAuthProvider();
 
-// ── Auth helper functions ─────────────────────────────────
-// These wrap Firebase functions so our pages can call them simply
-
-// Create a new account with email + password
-export const signUp = (email, password) =>
+// ── Auth functions ────────────────────────────────────────
+export const signUp          = (email, password) =>
   createUserWithEmailAndPassword(auth, email, password);
-
-// Log in with email + password
-export const logIn = (email, password) =>
+export const logIn           = (email, password) =>
   signInWithEmailAndPassword(auth, email, password);
-
-// Log in with Google (opens a popup)
 export const logInWithGoogle = () =>
   signInWithPopup(auth, googleProvider);
-
-// Log out the current user
-export const logOut = () => signOut(auth);
-
-// Listen for auth state changes (called whenever user logs in/out)
-// We use this in our AuthContext to know who is logged in
+export const logOut          = () => signOut(auth);
 export { onAuthStateChanged };
+
+// ── Firestore: Save a scan result ────────────────────────
+// Called after every UTR, QR, or Screenshot analysis
+export const saveScanResult = async (userId, scanData) => {
+  try {
+    await addDoc(collection(db, 'scans'), {
+      userId,                      // which user did this scan
+      ...scanData,                 // all scan result fields
+      createdAt: serverTimestamp() // Firestore server time
+    });
+  } catch (error) {
+    // Don't crash the app if saving fails — just log it
+    console.error('Failed to save scan:', error);
+  }
+};
+
+// ── Firestore: Get a user's scan history ─────────────────
+export const getScanHistory = async (userId, maxResults = 20) => {
+  try {
+    const q = query(
+      collection(db, 'scans'),
+      where('userId', '==', userId),   // only this user's scans
+      orderBy('createdAt', 'desc'),     // newest first
+      limit(maxResults)
+    );
+    const snapshot = await getDocs(q);
+    return snapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data(),
+      // Convert Firestore timestamp to readable string
+      createdAt: doc.data().createdAt?.toDate?.()?.toLocaleString() || 'Just now'
+    }));
+  } catch (error) {
+    console.error('Failed to fetch history:', error);
+    return [];
+  }
+};

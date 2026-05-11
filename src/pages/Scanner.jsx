@@ -1,4 +1,6 @@
-import { checkQRCode } from '../services/api';
+import { saveScanResult } from '../services/firebase.js';
+import { useAuth }        from '../contexts/AuthContext.js';
+import { checkQRCode } from '../services/api.js';
 import React, { useEffect, useRef, useState } from 'react';
 import jsQR from 'jsqr';
 
@@ -101,6 +103,7 @@ function ResultCard({ result }) {
 
 // ── MAIN SCANNER PAGE ───────────────────────────────────────
 function Scanner() {
+  const { user } = useAuth();
   // useRef holds a reference to the <video> element in the DOM
   const videoRef    = useRef(null);
   // canvasRef is an invisible canvas we use to read pixels from the video
@@ -196,6 +199,16 @@ function Scanner() {
   try {
     const analysis = await checkQRCode(code.data);
     setResult(analysis);
+    if (user) {
+  await saveScanResult(user.uid, {
+    type:       'QR',
+    verdict:    analysis.verdict,
+    confidence: analysis.confidence,
+    riskScore:  analysis.riskScore,
+    qrType:     analysis.qrType,
+    content:    analysis.content,
+  });
+}
   } catch (err) {
     setResult({ raw: code.data, verdict: 'SAFE', error: true });
   }

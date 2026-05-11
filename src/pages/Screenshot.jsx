@@ -1,9 +1,12 @@
 // src/pages/Screenshot.jsx
+import { saveScanResult } from '../services/firebase.js';
+import { useAuth }        from '../contexts/AuthContext.js';
 import React, { useState, useRef, useCallback } from 'react';
 import { analyzeScreenshot } from '../services/api.js';
 import VerdictCard from '../components/VerdictCard.jsx';
 
 function Screenshot() {
+  const { user } = useAuth();
   const [file,          setFile]          = useState(null);
   const [preview,       setPreview]       = useState(null);
   const [paymentApp,    setPaymentApp]    = useState('PhonePe');
@@ -70,6 +73,16 @@ function Screenshot() {
     try {
       const data = await analyzeScreenshot(file, paymentApp, expectedAmt);
       setResult(data);
+      if (user) {
+  await saveScanResult(user.uid, {
+    type:       'SCREENSHOT',
+    verdict:    data.verdict,
+    confidence: data.confidence,
+    riskScore:  data.riskScore,
+    paymentApp: paymentApp,
+    fileName:   file.name,
+  });
+}
     } catch (err) {
       setError(
         err.response?.data?.error ||

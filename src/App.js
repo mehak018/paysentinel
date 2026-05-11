@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 import Navbar         from './components/Navbar.jsx';
 import ProtectedRoute from './components/ProtectedRoute.jsx';
+import History from './pages/History.jsx';
 
 import Home       from './pages/Homes.jsx';
 import Dashboard  from './pages/Dashboard.jsx';
@@ -20,6 +21,9 @@ function App() {
                     background: '#04060d', color: 'white' }}>
         <Navbar />
         <Routes>
+         <Route path="/history" element={
+        <ProtectedRoute><History /></ProtectedRoute>
+}/>
           {/* Public */}
           <Route path="/"       element={<Home />}   />
           <Route path="/login"  element={<Login />}  />
