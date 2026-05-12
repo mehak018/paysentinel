@@ -16,7 +16,6 @@ import {
   getDocs,
   query,
   where,
-  orderBy,
   limit,
   serverTimestamp,
 } from 'firebase/firestore';
@@ -48,37 +47,51 @@ export { onAuthStateChanged };
 
 // ── Firestore: Save a scan result ────────────────────────
 // Called after every UTR, QR, or Screenshot analysis
+// ── Firestore: Save a scan result ────────────────────────
 export const saveScanResult = async (userId, scanData) => {
   try {
-    await addDoc(collection(db, 'scans'), {
-      userId,                      // which user did this scan
-      ...scanData,                 // all scan result fields
-      createdAt: serverTimestamp() // Firestore server time
+    console.log('Saving scan to Firestore...', { userId, scanData });
+    const docRef = await addDoc(collection(db, 'scans'), {
+      userId,
+      ...scanData,
+      createdAt: serverTimestamp()
     });
+    console.log('✅ Scan saved successfully! Doc ID:', docRef.id);
   } catch (error) {
-    // Don't crash the app if saving fails — just log it
-    console.error('Failed to save scan:', error);
+    console.error('❌ Failed to save scan:', error.message);
   }
 };
 
 // ── Firestore: Get a user's scan history ─────────────────
+// ── Firestore: Get a user's scan history ─────────────────
 export const getScanHistory = async (userId, maxResults = 20) => {
   try {
+    // Simpler query — no composite index needed
     const q = query(
       collection(db, 'scans'),
-      where('userId', '==', userId),   // only this user's scans
-      orderBy('createdAt', 'desc'),     // newest first
+      where('userId', '==', userId),
       limit(maxResults)
     );
     const snapshot = await getDocs(q);
-    return snapshot.docs.map(doc => ({
+
+    // Sort by date on the client side instead
+    const results = snapshot.docs.map(doc => ({
       id: doc.id,
       ...doc.data(),
-      // Convert Firestore timestamp to readable string
-      createdAt: doc.data().createdAt?.toDate?.()?.toLocaleString() || 'Just now'
+      createdAt: doc.data().createdAt?.toDate?.()?.toLocaleString()
+                 || 'Just now'
     }));
+
+    // Sort newest first on frontend
+    results.sort((a, b) => {
+      const dateA = new Date(a.createdAt);
+      const dateB = new Date(b.createdAt);
+      return dateB - dateA;
+    });
+
+    return results;
   } catch (error) {
-    console.error('Failed to fetch history:', error);
+    console.error('Failed to fetch history:', error.message);
     return [];
   }
 };

@@ -10,11 +10,11 @@ const PUBLIC_LINKS = [
 
 // Nav links — shown only when logged in
 const AUTH_LINKS = [
-  { label: 'History', path: '/history' },
   { label: 'Dashboard',  path: '/dashboard'   },
   { label: 'Scanner',    path: '/scanner'      },
   { label: 'Verify UTR', path: '/verify-utr'   },
   { label: 'Screenshot', path: '/screenshot'   },
+  { label: 'History', path: '/history' }
 ];
 
 function Navbar() {

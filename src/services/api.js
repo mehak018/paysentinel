@@ -5,6 +5,9 @@ import axios from 'axios';
 // In production:  uses https://paysentinel-backend.onrender.com
 // React automatically picks the right .env file
 const BASE_URL = process.env.REACT_APP_API_URL + '/api';
+console.log(process.env.REACT_APP_API_URL);
+console.log(BASE_URL);
+console.log(process.env.NODE_ENV);
 
 const api = axios.create({
   baseURL: BASE_URL,
