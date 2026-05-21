@@ -341,35 +341,44 @@ function Screenshot() {
         </div>
 
         {/* ── Loading State ── */}
-        {loading && (
-          <div style={{
-            padding: 32, borderRadius: 20, textAlign: 'center',
-            background: '#0d1528',
-            border: '1px solid rgba(255,255,255,0.07)',
-            marginBottom: 24,
-          }}>
-            <div style={{ fontSize: 40, marginBottom: 16 }}>🔬</div>
-            <p style={{ color: '#00d4ff', fontWeight: 700,
-                        fontSize: 17, marginBottom: 8 }}>
-              Forensic Analysis Running...
-            </p>
-            {/* Animated steps */}
-            {[
-              '📋 Extracting EXIF metadata',
-              '🔍 Checking pixel integrity',
-              '🖋 Verifying font consistency',
-              '🤖 Running AI fraud classifier',
-            ].map((step, i) => (
-              <p key={i} style={{
-                fontSize: 13, color: '#6b7280',
-                marginTop: 6,
-                animation: `fadeIn 0.5s ease ${i * 0.3}s both`,
-              }}>
-                {step}
-              </p>
-            ))}
-          </div>
-        )}
+        // Replace your loading state with this better version:
+{loading && (
+  <div style={{
+    padding: 32, borderRadius: 20, textAlign: 'center',
+    background: '#0d1528',
+    border: '1px solid rgba(255,255,255,0.07)',
+    marginBottom: 24,
+  }}>
+    <div style={{ fontSize: 40, marginBottom: 16 }}>🔬</div>
+    <p style={{ color: '#00d4ff', fontWeight: 700,
+                fontSize: 17, marginBottom: 16 }}>
+      Running Forensic Analysis...
+    </p>
+    <div style={{ display: 'flex', flexDirection: 'column',
+                  gap: 8, textAlign: 'left',
+                  maxWidth: 320, margin: '0 auto' }}>
+      {[
+        { icon: '📏', text: 'Checking image dimensions' },
+        { icon: '📋', text: 'Reading EXIF metadata' },
+        { icon: '🎨', text: 'Analyzing color space' },
+        { icon: '📁', text: 'Validating file properties' },
+        { icon: '⚖️', text: 'Checking file size rules' },
+        { icon: '🤖', text: 'Calculating fraud risk score' },
+      ].map((step, i) => (
+        <div key={i} style={{
+          display: 'flex', gap: 10, alignItems: 'center',
+          padding: '8px 12px', borderRadius: 8,
+          background: 'rgba(0,212,255,0.05)',
+          border: '1px solid rgba(0,212,255,0.1)',
+          animation: `fadeIn 0.4s ease ${i * 0.2}s both`,
+        }}>
+          <span style={{ fontSize: 16 }}>{step.icon}</span>
+          <p style={{ fontSize: 13, color: '#9ca3af' }}>{step.text}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+)}
 
         {/* ── Result ── */}
         {!loading && result && (
@@ -387,48 +396,108 @@ function Screenshot() {
           </>
         )}
 
-        {/* ── What We Check section ── */}
-        {!result && !loading && (
-          <div style={{
-            display: 'grid', gridTemplateColumns: 'repeat(3,1fr)',
-            gap: 16, marginTop: 8,
-          }}>
-            {[
-              { icon: '📋', title: 'EXIF Metadata',
-                desc: 'Detects editing software like Photoshop or Snapseed hidden in file data' },
-              { icon: '🔍', title: 'Pixel Analysis',
-                desc: 'Finds unnatural pixel patterns near amount and UTR fields' },
-              { icon: '🖋', title: 'Font & Layout',
-                desc: 'Compares fonts and spacing against known payment app templates' },
-              { icon: '⏰', title: 'Timestamp Check',
-                desc: 'Validates transaction time and date for unusual patterns' },
-              { icon: '🤖', title: 'AI Classifier',
-                desc: 'Machine learning model trained on thousands of real/fake screenshots' },
-              { icon: '📏', title: 'Dimension Check',
-                desc: 'Screenshot dimensions must match device resolution of claimed app' },
-            ].map(item => (
-              <div key={item.title} style={{
-                padding: '18px 20px', borderRadius: 14,
-                background: '#0d1528',
-                border: '1px solid rgba(255,255,255,0.06)',
-              }}>
-                <div style={{ fontSize: 24, marginBottom: 10 }}>
-                  {item.icon}
-                </div>
-                <p style={{ fontSize: 13, fontWeight: 700,
-                            color: '#e2e8f0', marginBottom: 6 }}>
-                  {item.title}
-                </p>
-                <p style={{ fontSize: 12, color: '#6b7280',
-                            lineHeight: 1.6 }}>
-                  {item.desc}
-                </p>
-              </div>
-            ))}
+       {/* ── What We Check — Updated ── */}
+{!result && !loading && (
+  <div style={{ marginTop: 8 }}>
+    {/* Real checks explanation */}
+    <div style={{
+      display: 'grid',
+      gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+      gap: 14,
+    }}>
+      {[
+        {
+          icon: '📏',
+          title: 'Dimension Analysis',
+          desc: 'Checks if image dimensions match real mobile device screenshots. Desktop-sized images for mobile apps are flagged.',
+          badge: 'Real Check',
+          badgeColor: '#00ff88',
+        },
+        {
+          icon: '📋',
+          title: 'EXIF Metadata',
+          desc: 'Reads hidden metadata inside the image file. Detects Photoshop, GIMP, PicsArt, Canva and other editing tools.',
+          badge: 'Real Check',
+          badgeColor: '#00ff88',
+        },
+        {
+          icon: '📁',
+          title: 'Filename Analysis',
+          desc: 'Checks filename for words like "edited", "fake", "copy", "modified" or references to editing apps.',
+          badge: 'Real Check',
+          badgeColor: '#00ff88',
+        },
+        {
+          icon: '⚖️',
+          title: 'File Size Rules',
+          desc: 'Genuine payment screenshots are 100KB–3MB. Files smaller than 50KB are almost always re-screenshots of fakes.',
+          badge: 'Real Check',
+          badgeColor: '#00ff88',
+        },
+        {
+          icon: '🎨',
+          title: 'Color Space Check',
+          desc: 'Phone screenshots use sRGB color space. CMYK color space is only used in print design — never in real screenshots.',
+          badge: 'Real Check',
+          badgeColor: '#00ff88',
+        },
+        {
+          icon: '🔗',
+          title: 'Extension vs Content',
+          desc: 'Verifies the file extension matches the actual content. A renamed file (e.g. .pdf renamed to .png) is flagged.',
+          badge: 'Real Check',
+          badgeColor: '#00ff88',
+        },
+      ].map(item => (
+        <div key={item.title} style={{
+          padding: '20px 22px', borderRadius: 14,
+          background: '#0d1528',
+          border: '1px solid rgba(255,255,255,0.06)',
+        }}>
+          <div style={{ display: 'flex', alignItems: 'flex-start',
+                        justifyContent: 'space-between', marginBottom: 10 }}>
+            <span style={{ fontSize: 26 }}>{item.icon}</span>
+            <span style={{
+              fontSize: 10, fontWeight: 700, padding: '2px 8px',
+              borderRadius: 6,
+              background: `${item.badgeColor}15`,
+              color: item.badgeColor,
+              border: `1px solid ${item.badgeColor}30`,
+            }}>
+              {item.badge}
+            </span>
           </div>
-        )}
-      </div>
+          <p style={{ fontSize: 13, fontWeight: 700,
+                      color: '#e2e8f0', marginBottom: 6 }}>
+            {item.title}
+          </p>
+          <p style={{ fontSize: 12, color: '#6b7280', lineHeight: 1.6 }}>
+            {item.desc}
+          </p>
+        </div>
+      ))}
+    </div>
 
+    {/* Limitation notice */}
+    <div style={{
+      marginTop: 16, padding: '16px 20px', borderRadius: 12,
+      background: 'rgba(255,170,0,0.05)',
+      border: '1px solid rgba(255,170,0,0.15)',
+    }}>
+      <p style={{ fontSize: 12, color: '#ffaa00',
+                  fontWeight: 700, marginBottom: 6 }}>
+        ⚠️ Important Limitation
+      </p>
+      <p style={{ fontSize: 12, color: '#9ca3af', lineHeight: 1.6 }}>
+        Screenshot analysis detects <strong style={{ color: '#e2e8f0' }}>
+        technical forgery</strong> (editing software, wrong dimensions, 
+        tampered metadata). It cannot verify the <strong style={{ color: '#e2e8f0' }}>
+        actual transaction</strong> — always cross-check using the 
+        UTR Verification tool and confirm with your bank portal.
+      </p>
+    </div>
+  </div>
+)}
       <style>{`
         @keyframes fadeIn {
           from { opacity: 0; transform: translateY(8px); }
@@ -436,7 +505,7 @@ function Screenshot() {
         }
       `}</style>
     </div>
-  );
-}
+    </div>
+  );}
 
 export default Screenshot;
