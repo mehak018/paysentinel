@@ -279,11 +279,10 @@ function Screenshot() {
 
             {/* Expected amount */}
             <div>
-              <label style={{ display: 'block', fontSize: 11,
-                              color: '#9ca3af', fontWeight: 700,
-                              textTransform: 'uppercase', letterSpacing: 1,
-                              marginBottom: 8 }}>
-                Expected Amount (₹) — Optional
+              <label style={{ ...labelStyle }}>
+                   Expected Amount (₹) — <span style={{ color:'#00d4ff' }}>
+                   Recommended for best accuracy
+                   </span>
               </label>
               <input
                 type="number"
@@ -339,6 +338,10 @@ function Screenshot() {
               : '🔬 Analyze Screenshot'}
           </button>
         </div>
+         <p style={{ fontSize: 12, color: '#6b7280',
+              textAlign: 'center', marginTop: 10 }}>
+            💡 Enter the expected amount above for automatic amount cross-verification
+        </p>
 
         {/* ── Loading State ── */}
         // Replace your loading state with this better version:

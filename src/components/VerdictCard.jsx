@@ -146,6 +146,63 @@ function VerdictCard({ data }) {
         {/* Risk bar */}
         <RiskBar score={data.riskScore || 0} />
       </div>
+      {/* Show extracted OCR data if available */}
+      {(data.extractedUTR || data.extractedAmount || data.detectedApp) && (
+    <div style={{
+      padding: '16px 20px', borderRadius: 12,
+      background: 'rgba(0,212,255,0.05)',
+      border: '1px solid rgba(0,212,255,0.15)',
+      marginBottom: 16,
+      }}>
+      <p style={{ fontSize: 11, color: '#00d4ff', fontWeight: 700,
+                textTransform: 'uppercase', letterSpacing: 1,
+                marginBottom: 12 }}>
+       📋 Extracted From Screenshot
+      </p>
+    <div style={{ display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fill, minmax(160px,1fr))',
+                  gap: 10 }}>
+        {data.extractedUTR && (
+          <div style={{ padding: '10px 14px', borderRadius: 8,
+                        background: 'rgba(0,0,0,0.2)' }}>
+            <p style={{ fontSize: 10, color: '#6b7280', marginBottom: 4,
+                      fontWeight: 700, textTransform: 'uppercase' }}>
+             UTR Found
+            </p>
+            <p style={{ fontSize: 13, color: '#e2e8f0',
+                      fontFamily: 'monospace', fontWeight: 600 }}>
+              {data.extractedUTR}
+            </p>
+         </div>
+      )}
+      {data.extractedAmount && (
+        <div style={{ padding: '10px 14px', borderRadius: 8,
+                      background: 'rgba(0,0,0,0.2)' }}>
+          <p style={{ fontSize: 10, color: '#6b7280', marginBottom: 4,
+                      fontWeight: 700, textTransform: 'uppercase' }}>
+            Amount Found
+          </p>
+          <p style={{ fontSize: 13, color: '#e2e8f0',
+                      fontWeight: 700 }}>
+            ₹{data.extractedAmount?.toLocaleString('en-IN')}
+          </p>
+        </div>
+      )}
+      {data.detectedApp && (
+        <div style={{ padding: '10px 14px', borderRadius: 8,
+                      background: 'rgba(0,0,0,0.2)' }}>
+          <p style={{ fontSize: 10, color: '#6b7280', marginBottom: 4,
+                      fontWeight: 700, textTransform: 'uppercase' }}>
+            App Detected
+          </p>
+          <p style={{ fontSize: 13, color: '#e2e8f0', fontWeight: 600 }}>
+            {data.detectedApp}
+          </p>
+        </div>
+      )}
+    </div>
+  </div>
+)}
 
       {/* ── Body ── */}
       <div style={{ padding: '24px 28px', background: '#080d1a' }}>
